@@ -22,6 +22,8 @@ class BagsListFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
 
         self.responseWidgets: Dict[str, ctk.CTkTextbox] = {}
 
+        self.buildGUI()
+
     def buildGUI(self) -> None:
         """
         Build the GUI, runs all the methods that build the GUI.

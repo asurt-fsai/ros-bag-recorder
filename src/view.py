@@ -3,12 +3,24 @@ ROSBAG GUI
 """
 
 from typing import Dict
+from enum import Enum
 
 import os
 import tkinter as tk
 import customtkinter as ctk
 
 from PIL import Image
+from .components.bagsListFrame import BagsListFrame
+from .components.recordFrame import RecordFrame
+
+
+class Pages(Enum):
+    """
+    Pages Enum
+    """
+
+    RECORD = 1
+    AVAILABLE_BAGS = 2
 
 
 class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
@@ -23,9 +35,8 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
         icon = tk.PhotoImage(file=f"{os.path.realpath(os.path.dirname(__file__))}/../favicon.png")
         self.tk.call("wm", "iconphoto", self._w, icon)
 
-        self.entryWidgets: Dict[str, ctk.CTkEntry] = {}
         self.buttonWidgets: Dict[str, ctk.CTkEntry] = {}
-        self.responseWidgets: Dict[str, ctk.CTkTextbox] = {}
+        self.pages: Dict[Pages, ctk.CTkFrame] = {}
 
     def buildGUI(self) -> None:
         """
@@ -36,6 +47,11 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
         self.grid_rowconfigure(0, weight=1)
 
         self.buildSidebar()
+
+        self.pages[Pages.RECORD] = RecordFrame(self, fg_color="transparent")
+        self.pages[Pages.RECORD].grid(row=0, column=1, sticky="nsew")
+
+        self.pages[Pages.AVAILABLE_BAGS] = BagsListFrame(self, fg_color="transparent")
 
     def buildSidebar(self) -> None:
         """
@@ -85,6 +101,7 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
             command=self._recordButtonEvent,
         )
         recordButton.grid(row=1, column=0, sticky="ew")
+        self.buttonWidgets["recordButton"] = recordButton
 
         availableBagsbutton = ctk.CTkButton(
             sideBarFrame,
@@ -100,6 +117,7 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
             command=self._availableBagsButtonEvent,
         )
         availableBagsbutton.grid(row=2, column=0, sticky="ew")
+        self.buttonWidgets["availableBagsbutton"] = availableBagsbutton
 
         ### SIDEBAR APPEARANCE MODE ###
         appearanceModeLabel = ctk.CTkLabel(sideBarFrame, text="Appearance Mode:", anchor="w")
@@ -114,10 +132,32 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
         appearanceModeOptioneMenu.set("Dark")
 
     def _recordButtonEvent(self) -> None:
-        pass
+        self._selectFrameByName(Pages.RECORD)
 
     def _availableBagsButtonEvent(self) -> None:
-        pass
+        self._selectFrameByName(Pages.AVAILABLE_BAGS)
+
+    def _selectFrameByName(self, name: Pages) -> None:
+        """
+        Select a frame to be displayed in the main area of the application
+        """
+
+        self.buttonWidgets["recordButton"].configure(
+            fg_color=("gray75", "gray25") if name == Pages.RECORD else "transparent"
+        )
+        self.buttonWidgets["availableBagsbutton"].configure(
+            fg_color=("gray75", "gray25") if name == Pages.AVAILABLE_BAGS else "transparent"
+        )
+
+        if name == Pages.RECORD:
+            self.pages[Pages.RECORD].grid(row=0, column=1, sticky="nsew")
+        else:
+            self.pages[Pages.RECORD].grid_forget()
+
+        if name == Pages.AVAILABLE_BAGS:
+            self.pages[Pages.AVAILABLE_BAGS].grid(row=0, column=1, sticky="nsew")
+        else:
+            self.pages[Pages.AVAILABLE_BAGS].grid_forget()
 
     def _changeAppearanceModeEvent(self, appearanceMode: str) -> None:
         """

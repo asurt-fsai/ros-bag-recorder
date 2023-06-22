@@ -23,6 +23,8 @@ class RecordFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
 
         self.responseWidgets: Dict[str, ctk.CTkTextbox] = {}
 
+        self.buildGUI()
+
     def buildGUI(self) -> None:
         """
         Build the GUI, runs all the methods that build the GUI.
@@ -67,7 +69,7 @@ class RecordFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
         The response section contain the server response and the directory list text boxes
         """
         mainSectionFrame = ctk.CTkFrame(self)
-        mainSectionFrame.grid(row=0, column=1, sticky="nsew")
+        mainSectionFrame.grid(row=0, column=1, sticky="nsew", padx=(5, 5), pady=(10, 10))
         mainSectionFrame.grid_columnconfigure((0, 2), weight=1)
         mainSectionFrame.grid_rowconfigure(5, weight=1)
 
