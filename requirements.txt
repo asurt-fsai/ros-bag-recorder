@@ -6,3 +6,4 @@ black==22.10.*
 mypy==0.991
 pre-commit==2.20.*
 customtkinter==5.2.*
+Pillow==9.5.0
