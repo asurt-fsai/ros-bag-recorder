@@ -42,26 +42,29 @@ class RecordFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
         scrollableBarFrame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="ns")
         scrollableBarFrame.grid_rowconfigure(1, weight=1)
 
+        scrollableCheckBoxes = ScrollableCheckBoxFrame(
+            scrollableBarFrame,
+            items=["/perception/test", "/slam/test", "/perception/asd", "lidar/asdq"],
+            width=200,
+        )
+        scrollableCheckBoxes.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="ns")
+
         topicSelectOptions = ctk.CTkOptionMenu(
             scrollableBarFrame,
             dynamic_resizing=True,
+            command=lambda x: self._updateTopicsByDropDownList(x, scrollableCheckBoxes),
             values=[
+                "none",
+                "all",
                 "perception",
                 "slam",
                 "supervisor",
                 "control",
                 "planning",
                 "lidar",
-                "all",
-                "none",
             ],
         )
         topicSelectOptions.grid(row=0, column=0, padx=10, pady=(10, 10), sticky="we")
-
-        scrollableCheckBoxes = ScrollableCheckBoxFrame(
-            scrollableBarFrame, items=["/chatter", "/chatter2"], width=200
-        )
-        scrollableCheckBoxes.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="ns")
 
     def buildMainSection(self) -> None:
         """
@@ -124,3 +127,17 @@ class RecordFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
 
         timeEntry = ctk.CTkEntry(master=optionFrame, placeholder_text="time")
         timeEntry.grid(row=2, column=2, padx=5, pady=10, sticky="n")
+
+    def _updateTopicsByDropDownList(
+        self, name: str, topicsListFrame: ScrollableCheckBoxFrame
+    ) -> None:
+        """
+        Update the topics list by the drop down list
+        """
+
+        if name == "all":
+            topicsListFrame.selectAll()
+        elif name == "none":
+            topicsListFrame.deselectAll()
+        else:
+            topicsListFrame.selectContainingName(name)

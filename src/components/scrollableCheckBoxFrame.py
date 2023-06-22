@@ -34,7 +34,7 @@ class ScrollableCheckBoxFrame(ctk.CTkScrollableFrame):  # type: ignore # pylint:
         checkbox = ctk.CTkCheckBox(self, text=item)
         if self.command is not None:
             checkbox.configure(command=self.command)
-        checkbox.grid(row=len(self.checkboxList), column=0, pady=(0, 10))
+        checkbox.grid(row=len(self.checkboxList), column=0, pady=(0, 10), sticky="w")
         self.checkboxList.append(checkbox)
 
     def removeItem(self, item: str) -> None:
@@ -52,3 +52,28 @@ class ScrollableCheckBoxFrame(ctk.CTkScrollableFrame):  # type: ignore # pylint:
         Get the checked items from the frame
         """
         return [checkbox.cget("text") for checkbox in self.checkboxList if checkbox.get() == 1]
+
+    def selectContainingName(self, name: str) -> None:
+        """
+        Select the checkbox containing the name
+        """
+
+        for checkbox in self.checkboxList:
+            if name in checkbox.cget("text"):
+                checkbox.select()
+
+    def deselectAll(self) -> None:
+        """
+        Deselect all checkboxes
+        """
+
+        for checkbox in self.checkboxList:
+            checkbox.deselect()
+
+    def selectAll(self) -> None:
+        """
+        Select all checkboxes
+        """
+
+        for checkbox in self.checkboxList:
+            checkbox.select()
