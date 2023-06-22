@@ -17,7 +17,7 @@ class RecordFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
     def __init__(self, master: Union[ctk.CTk, ctk.CTkFrame], **kwargs: Optional[Any]) -> None:
         super().__init__(master, **kwargs)
 
-        self.grid_columnconfigure((0, 3), weight=0)
+        self.grid_columnconfigure((0, 2), weight=0)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
@@ -80,7 +80,7 @@ class RecordFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
         terminalResponseLabel.grid(
             row=0, column=0, columnspan=5, padx=(10, 10), pady=(10, 10), sticky="wns"
         )
-        terminalResponseTextbox = ctk.CTkTextbox(mainSectionFrame, width=250, height=250)
+        terminalResponseTextbox = ctk.CTkTextbox(mainSectionFrame, height=250)
         terminalResponseTextbox.grid(
             row=1, column=0, columnspan=5, padx=(10, 10), pady=(10, 10), sticky="nsew"
         )
@@ -101,7 +101,7 @@ class RecordFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
 
         commandLabel = ctk.CTkLabel(mainSectionFrame, text="Generated rosbag command")
         commandLabel.grid(row=3, column=0, columnspan=5, padx=(10, 10), pady=(20, 20), sticky="wns")
-        commandTextbox = ctk.CTkTextbox(mainSectionFrame, width=250, height=150)
+        commandTextbox = ctk.CTkTextbox(mainSectionFrame, height=150)
         commandTextbox.grid(
             row=4, column=0, columnspan=5, padx=(10, 10), pady=(0, 20), sticky="nsew"
         )
@@ -113,20 +113,24 @@ class RecordFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
         build the options section frame for the rosbag command
         """
 
-        optionFrame = ctk.CTkFrame(self, width=140)
-        optionFrame.grid(row=0, column=2, padx=(10, 10), pady=(10, 10), sticky="nwe")
+        optionFrame = ctk.CTkFrame(self)
+        optionFrame.grid(row=0, column=2, padx=(10, 10), pady=(10, 10), sticky="nswe")
 
-        loginLabel = ctk.CTkLabel(master=optionFrame, text="Enter rosbag options")
-        loginLabel.grid(row=0, column=2, columnspan=1, padx=10, pady=10, sticky="n")
+        optionsLabel = ctk.CTkLabel(master=optionFrame, text="Enter rosbag options")
+        optionsLabel.grid(row=0, column=0, columnspan=1, padx=10, pady=10, sticky="n")
 
-        lengthEntry = ctk.CTkEntry(master=optionFrame, placeholder_text="length")
-        lengthEntry.grid(row=1, column=2, padx=5, pady=5, sticky="n")
+        sizeEntry = ctk.CTkEntry(master=optionFrame, placeholder_text="Size in MB", width=200)
+        sizeEntry.grid(row=1, column=0, padx=5, pady=5, sticky="n")
 
-        limitEntry = ctk.CTkEntry(master=optionFrame, placeholder_text="limit")
-        limitEntry.grid(row=2, column=2, padx=5, pady=10, sticky="n")
+        numberEntry = ctk.CTkEntry(
+            master=optionFrame, placeholder_text="Number of messages", width=200
+        )
+        numberEntry.grid(row=2, column=0, padx=5, pady=5, sticky="n")
 
-        timeEntry = ctk.CTkEntry(master=optionFrame, placeholder_text="time")
-        timeEntry.grid(row=2, column=2, padx=5, pady=10, sticky="n")
+        durationEntry = ctk.CTkEntry(
+            master=optionFrame, placeholder_text="Duration e.g. (30, 1m, 2h)", width=200
+        )
+        durationEntry.grid(row=3, column=0, padx=5, pady=10, sticky="n")
 
     def _updateTopicsByDropDownList(
         self, name: str, topicsListFrame: ScrollableCheckBoxFrame
