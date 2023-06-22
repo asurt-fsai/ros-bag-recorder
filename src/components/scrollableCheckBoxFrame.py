@@ -2,9 +2,8 @@
 Scrollable frame with checkboxes for topic list
 """
 
-from typing import List, Optional, Any, Union
+from typing import List, Optional, Any, Union, Callable
 
-import tkinter as tk
 import customtkinter as ctk
 
 
@@ -17,7 +16,7 @@ class ScrollableCheckBoxFrame(ctk.CTkScrollableFrame):  # type: ignore # pylint:
         self,
         master: Union[ctk.CTk, ctk.CTkFrame],
         items: List[str],
-        command: Optional[tk.EventType] = None,
+        command: Optional[Callable[..., Any]] = None,
         **kwargs: Optional[Any],
     ) -> None:
         super().__init__(master, **kwargs)
