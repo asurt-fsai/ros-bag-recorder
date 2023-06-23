@@ -104,8 +104,7 @@ class RecordPresenter:
         )
 
         topicListStr = "\n".join(self.view.checkedTopics)
-        printOutput = f"""Started Recording a bag of the following topics:\n{topicListStr}\n\n
-        The bag can be found in the following directory:\n{os.path.expanduser("~/bags/")}\n\n"""
+        printOutput = f"""Started Recording a bag of the following topics:\n{topicListStr}\n\nThe bag can be found in the following directory:\n{os.path.expanduser("~/bags/")}\n\n"""  # pylint: disable=C0301
 
         self.view.disableUiOnRecord()
         self.view.updateTerminalResponse(printOutput)
