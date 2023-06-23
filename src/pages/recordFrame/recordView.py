@@ -44,15 +44,15 @@ class RecordView(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
 
         self.widgets: Dict[str, ctk.CTkBaseClass] = {}
 
-    def buildGUI(self, presenter: RecordPresenter) -> None:
+    def buildGUI(self, presenter: RecordPresenter, rosTopics: List[str]) -> None:
         """
         Build the GUI, runs all the methods that build the GUI.
         """
-        self.buildScrollableFrameBar(presenter)
+        self.buildScrollableFrameBar(presenter, rosTopics)
         self.buildMainSection(presenter)
         self.buildOptionsSection(presenter)
 
-    def buildScrollableFrameBar(self, presenter: RecordPresenter) -> None:
+    def buildScrollableFrameBar(self, presenter: RecordPresenter, rosTopics: List[str]) -> None:
         """
         build the scrollable frame bar
         it contains both a dropdown menu and a scrollable frame with checkboxes for topic list
@@ -63,15 +63,7 @@ class RecordView(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
 
         scrollableCheckBoxes = ScrollableCheckBoxFrame(
             scrollableBarFrame,
-            items=[
-                "/perception/test",
-                "/slam/hehe",
-                "/slam/3omda",
-                "/supervisor/maybe",
-                "/control/haha",
-                "/planning/lol",
-                "/lidar",
-            ],
+            items=rosTopics,
             command=presenter.handleGenerateCommand,
             width=300,
         )
@@ -155,14 +147,6 @@ class RecordView(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
         copyButton.grid(row=5, column=4, padx=20, pady=3, sticky="n")
         self.widgets["stopButton"] = stopButton
 
-    def _copy(self, _: Any) -> None:
-        """
-        copy the command to clipboard
-        """
-        self.clipboard_clear()
-        self.clipboard_append(self.command)
-        self.update()
-
     def buildOptionsSection(self, presenter: RecordPresenter) -> None:
         """
         build the options section frame for the rosbag command
@@ -195,6 +179,14 @@ class RecordView(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
         durationEntry.grid(row=5, column=0, padx=5, sticky="n")
         self.widgets["durationEntry"] = durationEntry
         durationEntry.bind("<KeyRelease>", presenter.handleGenerateCommand)
+
+    def _copy(self, _: Any) -> None:
+        """
+        copy the command to clipboard
+        """
+        self.clipboard_clear()
+        self.clipboard_append(self.command)
+        self.update()
 
     @property
     def prefix(self) -> str:

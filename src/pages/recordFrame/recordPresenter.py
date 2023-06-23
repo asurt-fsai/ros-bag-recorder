@@ -22,7 +22,7 @@ class RecordView(Protocol):
 
     # pylint: disable=C0116
 
-    def buildGUI(self, presenter: RecordPresenter) -> None:
+    def buildGUI(self, presenter: RecordPresenter, rosTopics: List[str]) -> None:
         ...
 
     @property
@@ -182,4 +182,14 @@ class RecordPresenter:
         """
         Run the GUI.
         """
-        self.view.buildGUI(self)
+
+        command = shlex.split("rostopic list")
+        proc = subprocess.Popen(  # pylint: disable=R1732
+            command, stderr=subprocess.PIPE, stdout=subprocess.PIPE
+        )
+
+        out, _ = proc.communicate()
+
+        topics = out.decode("utf-8").strip().split("\n")
+
+        self.view.buildGUI(self, topics)
