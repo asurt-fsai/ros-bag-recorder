@@ -11,7 +11,8 @@ import customtkinter as ctk
 
 from PIL import Image
 from .pages.bagListFrame.bagsListView import BagsListFrame
-from .pages.recordFrame.recordView import RecordFrame
+from .pages.recordFrame.recordView import RecordView
+from .pages.recordFrame.recordPresenter import RecordPresenter
 
 
 class Pages(Enum):
@@ -48,8 +49,9 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
 
         self.buildSidebar()
 
-        self.pages[Pages.RECORD] = RecordFrame(self, fg_color="transparent")
+        self.pages[Pages.RECORD] = RecordView(self, fg_color="transparent")
         self.pages[Pages.RECORD].grid(row=0, column=1, sticky="nsew")
+        RecordPresenter(self.pages[Pages.RECORD]).run()
 
         self.pages[Pages.AVAILABLE_BAGS] = BagsListFrame(self, fg_color="transparent")
 
