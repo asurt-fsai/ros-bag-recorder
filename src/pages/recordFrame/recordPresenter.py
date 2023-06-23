@@ -95,6 +95,9 @@ class RecordPresenter:
             self.view.updateCommandResponse("Build command first")
             return
 
+        if not os.path.exists(os.path.expanduser("~/bags/")):
+            os.makedirs(os.path.expanduser("~/bags/"))
+
         command = shlex.split(self.view.command)
         self.proc = subprocess.Popen(  # pylint: disable=R1732
             command, stderr=subprocess.PIPE, stdout=subprocess.PIPE
