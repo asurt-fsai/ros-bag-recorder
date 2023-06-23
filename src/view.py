@@ -10,8 +10,8 @@ import tkinter as tk
 import customtkinter as ctk
 
 from PIL import Image
-from .components.bagsListFrame import BagsListFrame
-from .components.recordFrame import RecordFrame
+from .pages.bagListFrame.bagsListView import BagsListFrame
+from .pages.recordFrame.recordView import RecordFrame
 
 
 class Pages(Enum):

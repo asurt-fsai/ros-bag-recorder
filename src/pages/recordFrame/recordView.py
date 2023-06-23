@@ -6,7 +6,7 @@ from typing import Dict, Any, Union, Optional
 
 import customtkinter as ctk
 
-from .scrollableCheckBoxFrame import ScrollableCheckBoxFrame
+from ...components.scrollableCheckBoxFrame import ScrollableCheckBoxFrame
 
 
 class RecordFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901

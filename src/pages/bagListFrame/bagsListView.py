@@ -6,7 +6,7 @@ from typing import Dict, Any, Union, Optional
 
 import customtkinter as ctk
 
-from .scrollableLabelButtonFrame import ScrollableLabelButtonFrame
+from ...components.scrollableLabelButtonFrame import ScrollableLabelButtonFrame
 
 
 class BagsListFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
