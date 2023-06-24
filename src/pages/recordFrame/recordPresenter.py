@@ -70,6 +70,12 @@ class RecordView(Protocol):
     def enableUiOnStopRecord(self) -> None:
         ...
 
+    def emptyTopicCheckList(self) -> None:
+        ...
+
+    def addTopicsToCheckList(self, topics: List[str]) -> None:
+        ...
+
 
 class RecordPresenter:
     """
@@ -178,18 +184,50 @@ class RecordPresenter:
         self.view.updateCommandResponse(command)
         self.isCommandValid = True
 
-    def run(self) -> None:
+    def handleRefreshTopic(self, event: Optional[tk.EventType] = None) -> None:
         """
-        Run the GUI.
+        Refresh the topic list from ros master
         """
 
+        try:
+            topics = self._getTopicsNameFromRos()
+            self.view.emptyTopicCheckList()
+            self.view.addTopicsToCheckList(topics)
+        except ConnectionError as err:
+            self.view.updateTerminalResponse(str(err) + "\n\n")
+            self.view.scrollDownTerminalResponse()
+
+    def _getTopicsNameFromRos(self) -> List[str]:
+        """
+        Get active topic names from ROS
+
+        Returns
+        -------
+        List[str]
+            List of active topic names
+
+        Raises
+        ------
+
+        """
         command = shlex.split("rostopic list")
         proc = subprocess.Popen(  # pylint: disable=R1732
             command, stderr=subprocess.PIPE, stdout=subprocess.PIPE
         )
 
-        out, _ = proc.communicate()
+        out, err = proc.communicate()
+
+        if err:
+            raise ConnectionError(err.decode("utf-8"))
 
         topics = out.decode("utf-8").strip().split("\n")
 
-        self.view.buildGUI(self, topics)
+        return topics
+
+    def run(self) -> None:
+        """
+        Run the GUI.
+        """
+
+        self.view.buildGUI(self, [])
+        self.handleRefreshTopic()

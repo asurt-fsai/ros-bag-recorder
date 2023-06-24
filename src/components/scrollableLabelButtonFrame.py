@@ -9,6 +9,7 @@ import os
 import customtkinter as ctk
 
 from PIL import Image
+from ..constants import Constants
 
 
 class ScrollableLabelButtonFrame(ctk.CTkScrollableFrame):  # type: ignore # pylint: disable=R0901
@@ -27,17 +28,15 @@ class ScrollableLabelButtonFrame(ctk.CTkScrollableFrame):  # type: ignore # pyli
         self.grid_columnconfigure((0, 1, 3, 4), weight=0)
         self.grid_columnconfigure((2), weight=1)
 
-        imagePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../images")
-
         self.trashImage = ctk.CTkImage(
-            light_image=Image.open(os.path.join(imagePath, "trash_dark.png")),
-            dark_image=Image.open(os.path.join(imagePath, "trash_dark.png")),
+            light_image=Image.open(os.path.join(Constants.IMAGE_PATH, "trash_dark.png")),
+            dark_image=Image.open(os.path.join(Constants.IMAGE_PATH, "trash_dark.png")),
             size=(20, 20),
         )
 
         self.playImage = ctk.CTkImage(
-            light_image=Image.open(os.path.join(imagePath, "play_dark.png")),
-            dark_image=Image.open(os.path.join(imagePath, "play_dark.png")),
+            light_image=Image.open(os.path.join(Constants.IMAGE_PATH, "play_dark.png")),
+            dark_image=Image.open(os.path.join(Constants.IMAGE_PATH, "play_dark.png")),
             size=(20, 20),
         )
 

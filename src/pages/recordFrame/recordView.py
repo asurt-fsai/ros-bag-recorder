@@ -4,10 +4,13 @@ Record page
 
 from typing import Dict, Any, Union, Optional, Protocol, List
 
+import os
 import tkinter as tk
 import customtkinter as ctk
+from PIL import Image
 
 from ...components.scrollableCheckBoxFrame import ScrollableCheckBoxFrame
+from ...constants import Constants
 
 
 class RecordPresenter(Protocol):
@@ -27,6 +30,9 @@ class RecordPresenter(Protocol):
         ...
 
     def handleGenerateCommand(self, event: Optional[tk.EventType] = None) -> None:
+        ...
+
+    def handleRefreshTopic(self, event: Optional[tk.EventType] = None) -> None:
         ...
 
 
@@ -59,16 +65,8 @@ class RecordView(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
         """
         scrollableBarFrame = ctk.CTkFrame(self, width=250, corner_radius=0)
         scrollableBarFrame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="ns")
+        scrollableBarFrame.grid_columnconfigure(0, weight=1)
         scrollableBarFrame.grid_rowconfigure(1, weight=1)
-
-        scrollableCheckBoxes = ScrollableCheckBoxFrame(
-            scrollableBarFrame,
-            items=rosTopics,
-            command=presenter.handleGenerateCommand,
-            width=300,
-        )
-        scrollableCheckBoxes.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="ns")
-        self.widgets["scrollableCheckBoxes"] = scrollableCheckBoxes
 
         topicSelectOptions = ctk.CTkOptionMenu(
             scrollableBarFrame,
@@ -85,8 +83,29 @@ class RecordView(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
                 "lidar",
             ],
         )
-        topicSelectOptions.grid(row=0, column=0, padx=10, pady=(10, 10), sticky="we")
+        topicSelectOptions.grid(row=0, column=0, padx=(10, 5), pady=(5, 5), sticky="we")
         self.widgets["topicSelectOptions"] = topicSelectOptions
+
+        refreshImage = ctk.CTkImage(
+            light_image=Image.open(os.path.join(Constants.IMAGE_PATH, "refresh_dark.png")),
+            dark_image=Image.open(os.path.join(Constants.IMAGE_PATH, "refresh_dark.png")),
+            size=(20, 20),
+        )
+
+        refreshButton = ctk.CTkButton(scrollableBarFrame, text="", width=50, image=refreshImage)
+        refreshButton.configure(command=presenter.handleRefreshTopic)
+        refreshButton.grid(row=0, column=1, pady=(5, 5), padx=(5, 10), sticky="e")
+
+        scrollableCheckBoxes = ScrollableCheckBoxFrame(
+            scrollableBarFrame,
+            items=rosTopics,
+            command=presenter.handleGenerateCommand,
+            width=300,
+        )
+        scrollableCheckBoxes.grid(
+            row=1, column=0, columnspan=2, padx=10, pady=(10, 10), sticky="ns"
+        )
+        self.widgets["scrollableCheckBoxes"] = scrollableCheckBoxes
 
     def buildMainSection(self, presenter: RecordPresenter) -> None:
         """
@@ -330,3 +349,20 @@ class RecordView(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
         self.widgets["durationEntry"].configure(state="normal")
         self.widgets["numberEntry"].configure(state="normal")
         self.widgets["topicSelectOptions"].configure(state="normal")
+
+    def emptyTopicCheckList(self) -> None:
+        """
+        Empty the topic check list
+        """
+        self.widgets["scrollableCheckBoxes"].removeAllItems()
+
+    def addTopicsToCheckList(self, topics: List[str]) -> None:
+        """
+        Add topics to the check list
+
+        parameters
+        ----------
+        topics: List[str]
+            The topics to add to the check list
+        """
+        self.widgets["scrollableCheckBoxes"].addItems(topics)
