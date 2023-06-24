@@ -4,7 +4,7 @@ Generate a rosbag record command based on the given parameters
 
 from typing import List, Dict
 
-import os
+from ..constants import Constants
 
 
 def generateRosBagRecordCommand(topicList: List[str], prefix: str, options: Dict[str, str]) -> str:
@@ -24,11 +24,9 @@ def generateRosBagRecordCommand(topicList: List[str], prefix: str, options: Dict
         The generated command
     """
 
-    path = os.path.expanduser("~/bags/")
-
     command = "rosbag record"
 
-    command += f" -o {path}"
+    command += f" -o {Constants.BAG_DIR_PATH}"
     if prefix != "":
         command += prefix
 
