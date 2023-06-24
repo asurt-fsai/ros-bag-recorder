@@ -37,6 +37,19 @@ class ScrollableCheckBoxFrame(ctk.CTkScrollableFrame):  # type: ignore # pylint:
         checkbox.grid(row=len(self.checkboxList), column=0, pady=(0, 10), sticky="w")
         self.checkboxList.append(checkbox)
 
+    def addItems(self, items: List[str]) -> None:
+        """
+        Add checkboxes to the frame
+
+        parameters
+        ----------
+        items : List[str]
+            Items to add
+        """
+
+        for item in items:
+            self.addItem(item)
+
     def removeItem(self, item: str) -> None:
         """
         Remove a checkbox from the frame
@@ -46,6 +59,15 @@ class ScrollableCheckBoxFrame(ctk.CTkScrollableFrame):  # type: ignore # pylint:
                 checkbox.destroy()
                 self.checkboxList.remove(checkbox)
                 return
+
+    def removeAllItems(self) -> None:
+        """
+        Remove all checkboxes from the frame
+        """
+
+        for checkbox in self.checkboxList:
+            checkbox.destroy()
+        self.checkboxList = []
 
     def getCheckedItems(self) -> List[str]:
         """

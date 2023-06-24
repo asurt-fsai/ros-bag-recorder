@@ -13,6 +13,7 @@ from PIL import Image
 from .pages.bagListFrame.bagsListView import BagsListFrame
 from .pages.recordFrame.recordView import RecordView
 from .pages.recordFrame.recordPresenter import RecordPresenter
+from .constants import Constants
 
 
 class Pages(Enum):
@@ -75,17 +76,15 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
         nameLabel.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         ### SIDEBAR Buttons ###
-        imagePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "images")
-
         recordImage = ctk.CTkImage(
-            light_image=Image.open(os.path.join(imagePath, "record_light.png")),
-            dark_image=Image.open(os.path.join(imagePath, "record_dark.png")),
+            light_image=Image.open(os.path.join(Constants.IMAGE_PATH, "record_light.png")),
+            dark_image=Image.open(os.path.join(Constants.IMAGE_PATH, "record_dark.png")),
             size=(20, 20),
         )
 
         playImage = ctk.CTkImage(
-            light_image=Image.open(os.path.join(imagePath, "play_light.png")),
-            dark_image=Image.open(os.path.join(imagePath, "play_dark.png")),
+            light_image=Image.open(os.path.join(Constants.IMAGE_PATH, "play_light.png")),
+            dark_image=Image.open(os.path.join(Constants.IMAGE_PATH, "play_dark.png")),
             size=(20, 20),
         )
 
