@@ -27,7 +27,7 @@ features:
 #### Running Ros bag Recorder
 
 ```bash
-    $ python run.py
+    $ ./run.sh
 ```
 
 ## License
