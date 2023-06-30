@@ -2,8 +2,7 @@
 ROSBAG GUI
 """
 
-from typing import Dict
-from enum import Enum
+from typing import Dict, Protocol, Optional
 
 import os
 import tkinter as tk
@@ -12,19 +11,21 @@ import customtkinter as ctk
 from PIL import Image
 from .pages.bagListFrame.bagsListView import BagsListFrame
 from .pages.recordFrame.recordView import RecordView
-from .pages.recordFrame.recordPresenter import RecordPresenter
-from .pages.bagListFrame.bagListPresenter import BagListPresenter
-from .logic.fileSystemInterface import FileSystemInterface
-from .constants import Constants
+from .constants import Constants, Pages
 
 
-class Pages(Enum):
+class RosBagPresenter(Protocol):
     """
-    Pages Enum
+    Record Presenter protocol
     """
 
-    RECORD = 1
-    AVAILABLE_BAGS = 2
+    # pylint: disable=C0116
+
+    def handleRecordButtonEvent(self, event: Optional[tk.EventType] = None) -> None:
+        ...
+
+    def handleAvailableBagsButtonEvent(self, event: Optional[tk.EventType] = None) -> None:
+        ...
 
 
 class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
@@ -42,7 +43,7 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
         self.buttonWidgets: Dict[str, ctk.CTkEntry] = {}
         self.pages: Dict[Pages, ctk.CTkFrame] = {}
 
-    def buildGUI(self) -> None:
+    def buildGUI(self, presenter: RosBagPresenter) -> Dict[Pages, ctk.CTkFrame]:
         """
         Build the GUI, runs all the methods that build the GUI.
         """
@@ -50,16 +51,16 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        self.buildSidebar()
+        self.buildSidebar(presenter)
 
         self.pages[Pages.RECORD] = RecordView(self, fg_color="transparent")
         self.pages[Pages.RECORD].grid(row=0, column=1, sticky="nsew")
-        RecordPresenter(self.pages[Pages.RECORD]).run()
 
         self.pages[Pages.AVAILABLE_BAGS] = BagsListFrame(self, fg_color="transparent")
-        BagListPresenter(self.pages[Pages.AVAILABLE_BAGS], FileSystemInterface()).run()
 
-    def buildSidebar(self) -> None:
+        return self.pages
+
+    def buildSidebar(self, presenter: RosBagPresenter) -> None:
         """
         Build the sidebar frame with widgets
         The sidebar contain the name of the application and the appearance mode option menu
@@ -102,7 +103,7 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
             hover_color=("gray70", "gray30"),
             image=recordImage,
             anchor="w",
-            command=self._recordButtonEvent,
+            command=presenter.handleRecordButtonEvent,
         )
         recordButton.grid(row=1, column=0, sticky="ew")
         self.buttonWidgets["recordButton"] = recordButton
@@ -118,7 +119,7 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
             hover_color=("gray70", "gray30"),
             image=playImage,
             anchor="w",
-            command=self._availableBagsButtonEvent,
+            command=presenter.handleAvailableBagsButtonEvent,
         )
         availableBagsbutton.grid(row=2, column=0, sticky="ew")
         self.buttonWidgets["availableBagsbutton"] = availableBagsbutton
@@ -135,13 +136,7 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
 
         appearanceModeOptioneMenu.set("Dark")
 
-    def _recordButtonEvent(self) -> None:
-        self._selectFrameByName(Pages.RECORD)
-
-    def _availableBagsButtonEvent(self) -> None:
-        self._selectFrameByName(Pages.AVAILABLE_BAGS)
-
-    def _selectFrameByName(self, name: Pages) -> None:
+    def selectPage(self, name: Pages) -> None:
         """
         Select a frame to be displayed in the main area of the application
         """
