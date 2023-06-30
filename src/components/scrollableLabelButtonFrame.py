@@ -2,7 +2,7 @@
 Scrollable frame with labels and buttons for bag list
 """
 
-from typing import Optional, Any, Union, Callable, Tuple, List
+from typing import Optional, Any, Union, Callable, Tuple, List, Dict
 from tkinter import ttk
 
 import os
@@ -20,8 +20,9 @@ class ScrollableLabelButtonFrame(ctk.CTkScrollableFrame):  # type: ignore # pyli
     def __init__(
         self,
         master: Union[ctk.CTk, ctk.CTkFrame],
-        playCommand: Callable[..., Any],
-        deleteCommand: Callable[..., Any],
+        bagDescription: Dict[str, Any],
+        playCommand: Callable[[str], Any],
+        deleteCommand: Callable[[str], Any],
         **kwargs: Optional[Any],
     ) -> None:
         super().__init__(master, **kwargs)
@@ -44,8 +45,11 @@ class ScrollableLabelButtonFrame(ctk.CTkScrollableFrame):  # type: ignore # pyli
         self.deleteCommand = deleteCommand
         self.labelsList: List[Tuple[ctk.CTkLabel, ctk.CTkLabel, ctk.CTkLabel]] = []
         self.buttonList: List[Tuple[ctk.CTkButton, ctk.CTkButton]] = []
+        self.sepratorList: List[ttk.Separator] = []
 
-    def addItem(self, item: str, timestamp: str, description: str) -> None:
+        self.addItems(bagDescription)
+
+    def addItem(self, key: str, item: str, timestamp: str, description: str) -> None:
         """
         Add a label and button to the frame
         """
@@ -67,11 +71,11 @@ class ScrollableLabelButtonFrame(ctk.CTkScrollableFrame):  # type: ignore # pyli
         )
 
         deleteButton = ctk.CTkButton(self, text="", width=50, height=24, image=self.trashImage)
-        deleteButton.configure(command=lambda: self.playCommand(item))
+        deleteButton.configure(command=lambda: self.deleteCommand(key))
         deleteButton.grid(row=row, column=3, pady=(0, 10), padx=5)
 
         playButton = ctk.CTkButton(self, text="", width=50, height=24, image=self.playImage)
-        playButton.configure(command=lambda: self.playCommand(item))
+        playButton.configure(command=lambda: self.playCommand(key))
         playButton.grid(row=row, column=4, pady=(0, 10), padx=5)
 
         styl = ttk.Style()
@@ -82,17 +86,42 @@ class ScrollableLabelButtonFrame(ctk.CTkScrollableFrame):  # type: ignore # pyli
 
         self.labelsList.append((itemLabel, timestampLabel, descriptionLabel))
         self.buttonList.append((deleteButton, playButton))
+        self.sepratorList.append(separator)
 
     def removeItem(self, item: str) -> None:
         """
         Remove a label and button from the frame
         """
-        for labels, buttons in zip(self.labelsList, self.buttonList):
+        for labels, buttons, seprator in zip(self.labelsList, self.buttonList, self.sepratorList):
             if item == labels[0].cget("text"):
                 for label in labels:
                     label.destroy()
                 for button in buttons:
                     button.destroy()
+                seprator.destroy()
                 self.labelsList.remove(labels)
                 self.buttonList.remove(buttons)
+                self.sepratorList.remove(seprator)
                 return
+
+    def clear(self) -> None:
+        """
+        Clear the frame
+        """
+
+        for labels, buttons, seprator in zip(self.labelsList, self.buttonList, self.sepratorList):
+            for label in labels:
+                label.destroy()
+            for button in buttons:
+                button.destroy()
+            seprator.destroy()
+        self.labelsList.clear()
+        self.buttonList.clear()
+        self.sepratorList.clear()
+
+    def addItems(self, items: Dict[str, Any]) -> None:
+        """
+        Add multiple items to the frame
+        """
+        for key, value in items.items():
+            self.addItem(key, value["name"], value["date"], value["description"])

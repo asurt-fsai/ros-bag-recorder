@@ -13,6 +13,8 @@ from PIL import Image
 from .pages.bagListFrame.bagsListView import BagsListFrame
 from .pages.recordFrame.recordView import RecordView
 from .pages.recordFrame.recordPresenter import RecordPresenter
+from .pages.bagListFrame.bagListPresenter import BagListPresenter
+from .logic.fileSystemInterface import FileSystemInterface
 from .constants import Constants
 
 
@@ -55,6 +57,7 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
         RecordPresenter(self.pages[Pages.RECORD]).run()
 
         self.pages[Pages.AVAILABLE_BAGS] = BagsListFrame(self, fg_color="transparent")
+        BagListPresenter(self.pages[Pages.AVAILABLE_BAGS], FileSystemInterface()).run()
 
     def buildSidebar(self) -> None:
         """

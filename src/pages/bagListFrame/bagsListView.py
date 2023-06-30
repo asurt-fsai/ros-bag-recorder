@@ -2,11 +2,26 @@
 Record page
 """
 
-from typing import Dict, Any, Union, Optional
+from typing import Dict, Any, Union, Optional, Protocol
 
+
+import tkinter as tk
 import customtkinter as ctk
-
 from ...components.scrollableLabelButtonFrame import ScrollableLabelButtonFrame
+
+
+class BagListPresenter(Protocol):
+    """
+    Record Presenter protocol
+    """
+
+    # pylint: disable=C0116
+
+    def handlePlayBag(self, name: str, event: Optional[tk.EventType] = None) -> None:
+        ...
+
+    def handleDeleteBag(self, name: str, event: Optional[tk.EventType] = None) -> None:
+        ...
 
 
 class BagsListFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
@@ -20,16 +35,29 @@ class BagsListFrame(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        self.responseWidgets: Dict[str, ctk.CTkTextbox] = {}
+        self.widgets: Dict[str, ctk.CTkBaseClass] = {}
 
-        self.buildGUI()
-
-    def buildGUI(self) -> None:
+    def buildGUI(self, presenter: BagListPresenter, bagDescription: Dict[str, Any]) -> None:
         """
         Build the GUI, runs all the methods that build the GUI.
         """
 
-        scrollableLabelButtonFrame = ScrollableLabelButtonFrame(self, lambda: None, lambda: None)
+        scrollableLabelButtonFrame = ScrollableLabelButtonFrame(
+            self, bagDescription, presenter.handlePlayBag, presenter.handleDeleteBag
+        )
         scrollableLabelButtonFrame.grid(
             row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nswe"
         )
+        self.widgets["scrollableLabelButtonFrame"] = scrollableLabelButtonFrame
+
+    def clearBagList(self) -> None:
+        """
+        Clear the bag list
+        """
+        self.widgets["scrollableLabelButtonFrame"].clear()
+
+    def addBags(self, bagsDescription: Dict[str, Any]) -> None:
+        """
+        Add bags to the bag list
+        """
+        self.widgets["scrollableLabelButtonFrame"].addItems(bagsDescription)
