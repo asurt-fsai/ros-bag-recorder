@@ -39,6 +39,7 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
         self.geometry(f"{1600}x{900}")
         icon = tk.PhotoImage(file=f"{os.path.realpath(os.path.dirname(__file__))}/../favicon.png")
         self.tk.call("wm", "iconphoto", self._w, icon)
+        ctk.set_widget_scaling(1.05)
 
         self.buttonWidgets: Dict[str, ctk.CTkEntry] = {}
         self.pages: Dict[Pages, ctk.CTkFrame] = {}
@@ -68,8 +69,8 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
 
         ### SIDEBAR MAIN FRAME ###
         sideBarFrame = ctk.CTkFrame(self, width=140, corner_radius=0)
-        sideBarFrame.grid(row=0, column=0, rowspan=4, sticky="nsew")
-        sideBarFrame.grid_rowconfigure(4, weight=1)
+        sideBarFrame.grid(row=0, column=0, sticky="nsew")
+        sideBarFrame.grid_rowconfigure(3, weight=1)
 
         ### SIDEBAR LABEL ###
         nameLabel = ctk.CTkLabel(
@@ -124,6 +125,17 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
         availableBagsbutton.grid(row=2, column=0, sticky="ew")
         self.buttonWidgets["availableBagsbutton"] = availableBagsbutton
 
+        ### SIDEBAR UI Scaling ###
+        scalingLabel = ctk.CTkLabel(sideBarFrame, text="UI Scaling:", anchor="sw")
+        scalingLabel.grid(row=3, column=0, padx=20, pady=(10, 0), sticky="s")
+        scalingOptionemenu = ctk.CTkOptionMenu(
+            sideBarFrame,
+            values=["80%", "90%", "100%", "105%", "110%"],
+            command=self._changeScalingEvent,
+        )
+        scalingOptionemenu.grid(row=4, column=0, padx=20, pady=(10, 20))
+        scalingOptionemenu.set("105%")
+
         ### SIDEBAR APPEARANCE MODE ###
         appearanceModeLabel = ctk.CTkLabel(sideBarFrame, text="Appearance Mode:", anchor="w")
         appearanceModeLabel.grid(row=5, column=0, padx=20, pady=(10, 0))
@@ -168,3 +180,16 @@ class RosBagClientGui(ctk.CTk):  # type: ignore # pylint: disable=R0901
             The appearance mode to change to (Dark/Light/System)
         """
         ctk.set_appearance_mode(appearanceMode)
+
+    def _changeScalingEvent(self, newScale: str) -> None:
+        """
+        Change the scaling of the application
+
+        parameters
+        ----------
+        newScale: str
+            The new scaling to change to (100%/125%/150%/175%/200%)
+        """
+
+        newScaleFloat = int(newScale.replace("%", "")) / 100
+        ctk.set_widget_scaling(newScaleFloat)
