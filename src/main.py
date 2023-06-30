@@ -3,6 +3,7 @@ Main module of the application.
 """
 
 from .view import RosBagClientGui
+from .presenter import RosBagPresenter
 
 
 def main() -> None:
@@ -10,7 +11,8 @@ def main() -> None:
     Main function of the application.
     """
     view = RosBagClientGui()
-    view.buildGUI()
+    presenter = RosBagPresenter(view)
+    presenter.run()
     view.mainloop()
 
 
