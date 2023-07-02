@@ -12,6 +12,7 @@ import shlex
 import tkinter as tk
 import psutil
 from ...logic.rosCommandGenerator import generateRosBagRecordCommand
+from ...logic.fileSystemInterface import FileSystemInterface
 from ...constants import Constants
 
 
@@ -76,6 +77,9 @@ class RecordView(Protocol):
     def addTopicsToCheckList(self, topics: List[str]) -> None:
         ...
 
+    def openDescriptionDialog(self) -> Optional[str]:
+        ...
+
 
 class RecordPresenter:
     """
@@ -84,11 +88,13 @@ class RecordPresenter:
 
     # pylint: disable=W0613
 
-    def __init__(self, view: RecordView) -> None:
+    def __init__(self, view: RecordView, model: FileSystemInterface) -> None:
         self.view = view
+        self.model = model
+
         self.isCommandValid = False
         self.proc: Any = None
-        self.stdoutData = ""
+        self.currentName = ""
 
     def handleStartRecord(self, event: Optional[tk.EventType] = None) -> None:
         """
@@ -96,6 +102,8 @@ class RecordPresenter:
         The function creates a new subprocess that runs the command
         While this function is running the GUI is disabled
         """
+
+        self.handleGenerateCommand(None)
 
         if not self.isCommandValid:
             self.view.updateCommandResponse("Build command first")
@@ -107,7 +115,7 @@ class RecordPresenter:
         )
 
         topicListStr = "\n".join(self.view.checkedTopics)
-        printOutput = f"""Started Recording a bag of the following topics:\n{topicListStr}\n\nThe bag can be found in the following directory:\n{Constants.BAG_DIR_PATH}\n\n"""  # pylint: disable=C0301
+        printOutput = f"Started Recording a bag of the following topics:\n{topicListStr}\n\n"
 
         self.view.disableUiOnRecord()
         self.view.updateTerminalResponse(printOutput)
@@ -126,7 +134,17 @@ class RecordPresenter:
 
         self.proc.send_signal(signal.SIGINT)
 
+        description = self.view.openDescriptionDialog()
+        if not description:
+            description = ""
+
+        self.model.addBag(self.currentName, description)
+
         printOutput = "Stopped Recording\n\n"
+        printOutput += (
+            f"The bag can be found in the following directory:\n{Constants.BAG_DIR_PATH}\n\n"
+        )
+
         self.view.enableUiOnStopRecord()
         self.view.updateTerminalResponse(printOutput)
         self.view.scrollDownTerminalResponse()
@@ -179,7 +197,9 @@ class RecordPresenter:
                 return
 
         ### generate command ###
-        command = generateRosBagRecordCommand(self.view.checkedTopics, self.view.prefix, options)
+        command, self.currentName = generateRosBagRecordCommand(
+            self.view.checkedTopics, self.view.prefix, options
+        )
         self.view.updateCommandResponse(command)
         self.isCommandValid = True
 

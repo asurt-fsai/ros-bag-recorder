@@ -36,8 +36,8 @@ class FileSystemInterface:
         parsedBagName = self._parsebagName(name)
         self.bagDescription[name] = {
             "description": description,
-            "date": parsedBagName[1],
             "name": parsedBagName[0],
+            "date": parsedBagName[1],
         }
         self.writeJsonToFile()
 
@@ -146,11 +146,11 @@ class FileSystemInterface:
         """
 
         parsedNameList = bagName.split(".")[0].split("_")
-        name = parsedNameList[0]
-        date = parsedNameList[1][:10]
+        prefix = parsedNameList[0]
+        date = parsedNameList[1].split("-")
 
-        year = date[:4]
-        month = date[5:7]
-        day = date[8:10]
+        day = date[0]
+        month = date[1]
+        year = date[2]
 
-        return (name, f"{day}-{month}-{year}")
+        return prefix, f"{day}-{month}-{year}"

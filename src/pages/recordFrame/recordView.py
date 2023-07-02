@@ -366,3 +366,18 @@ class RecordView(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
             The topics to add to the check list
         """
         self.widgets["scrollableCheckBoxes"].addItems(topics)
+
+    def openDescriptionDialog(self) -> Optional[str]:
+        """
+        Open the description dialog
+
+        parameters
+        ----------
+        description: str
+            The description to display
+        """
+        dialog = ctk.CTkInputDialog(
+            text="Type in a description of the bag:", title="Bag Description"
+        )
+
+        return dialog.get_input()  # type: ignore

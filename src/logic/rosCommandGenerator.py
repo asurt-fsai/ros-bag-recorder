@@ -2,12 +2,16 @@
 Generate a rosbag record command based on the given parameters
 """
 
-from typing import List, Dict
+from typing import List, Dict, Tuple
+
+import datetime
 
 from ..constants import Constants
 
 
-def generateRosBagRecordCommand(topicList: List[str], prefix: str, options: Dict[str, str]) -> str:
+def generateRosBagRecordCommand(
+    topicList: List[str], prefix: str, options: Dict[str, str]
+) -> Tuple[str, str]:
     """
     Generate a rosbag record command based on the given parameters
 
@@ -20,15 +24,17 @@ def generateRosBagRecordCommand(topicList: List[str], prefix: str, options: Dict
 
     returns
     -------
-    str
-        The generated command
+    Tuple[str, str]
+        The generated command, and the bag name
     """
+
+    currentTime = datetime.datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
 
     command = "rosbag record"
 
-    command += f" -o {Constants.BAG_DIR_PATH}"
+    command += f" -O {Constants.BAG_DIR_PATH}"
     if prefix != "":
-        command += prefix
+        command += prefix + "_" + currentTime
 
     for key, value in options.items():
         command += " " + key + " " + value
@@ -36,4 +42,4 @@ def generateRosBagRecordCommand(topicList: List[str], prefix: str, options: Dict
     for topic in topicList:
         command += " " + topic
 
-    return command
+    return command, prefix + "_" + currentTime + ".bag"
