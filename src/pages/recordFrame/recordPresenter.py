@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Optional, Protocol, Callable, Any, List, Dict
 
 import re
-import os
 import subprocess
 import signal
 import shlex
@@ -101,9 +100,6 @@ class RecordPresenter:
         if not self.isCommandValid:
             self.view.updateCommandResponse("Build command first")
             return
-
-        if not os.path.exists(Constants.BAG_DIR_PATH):
-            os.makedirs(Constants.BAG_DIR_PATH)
 
         command = shlex.split(self.view.command)
         self.proc = subprocess.Popen(  # pylint: disable=R1732

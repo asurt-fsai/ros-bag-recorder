@@ -17,6 +17,9 @@ class FileSystemInterface:
     def __init__(self) -> None:
         self.bagDescription: Dict[str, Any] = {}
 
+        if not os.path.exists(Constants.BAG_DIR_PATH):
+            os.makedirs(Constants.BAG_DIR_PATH)
+
         self.loadDescriptionJson()
 
     def addBag(self, name: str, description: str) -> None:
