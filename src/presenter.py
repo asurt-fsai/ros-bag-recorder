@@ -65,7 +65,7 @@ class RosBagPresenter:
         pages = self.view.buildGUI(self)
         fileSystem = FileSystemInterface()
 
-        self.recordPresenter = RecordPresenter(pages[Pages.RECORD])
+        self.recordPresenter = RecordPresenter(pages[Pages.RECORD], fileSystem)
         self.bagListPresenter = BagListPresenter(pages[Pages.AVAILABLE_BAGS], fileSystem)
 
         self.recordPresenter.run()
