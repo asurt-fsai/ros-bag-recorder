@@ -177,15 +177,18 @@ class RecordView(ctk.CTkFrame):  # type: ignore # pylint: disable=R0901
         optionsLabel = ctk.CTkLabel(master=optionFrame, text="Enter rosbag options")
         optionsLabel.grid(row=0, column=0, columnspan=1, padx=10, pady=(10, 20), sticky="n")
 
-        numberLabel = ctk.CTkLabel(master=optionFrame, text="Number of messages", anchor="w")
-        numberLabel.grid(row=2, column=0, padx=10, sticky="nw")
-        numberEntry = ctk.CTkEntry(
-            master=optionFrame,
-            width=200,
-        )
-        numberEntry.grid(row=3, column=0, padx=5, pady=(0, 10), sticky="n")
-        self.widgets["numberEntry"] = numberEntry
-        numberEntry.bind("<KeyRelease>", presenter.handleGenerateCommand)
+        ###############################
+        ### Not applicable for ROS2 ###
+        ###############################
+        # numberLabel = ctk.CTkLabel(master=optionFrame, text="Number of messages", anchor="w")
+        # numberLabel.grid(row=2, column=0, padx=10, sticky="nw")
+        # numberEntry = ctk.CTkEntry(
+        #     master=optionFrame,
+        #     width=200,
+        # )
+        # numberEntry.grid(row=3, column=0, padx=5, pady=(0, 10), sticky="n")
+        # self.widgets["numberEntry"] = numberEntry
+        # numberEntry.bind("<KeyRelease>", presenter.handleGenerateCommand)
 
         durationLabel = ctk.CTkLabel(
             master=optionFrame, text="Duration e.g. (30, 1m, 2h)", anchor="w"
