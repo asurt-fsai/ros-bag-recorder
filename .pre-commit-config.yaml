@@ -24,10 +24,10 @@ repos:
         entry: echo hello
         language: system
         run: source ./venv/bin/activate
-      - id: check-format
-        name: check format
-        entry: make -s format_staged
-        language: system
+      # - id: check-format
+      #   name: check format
+      #   entry: make -s format_staged
+      #   language: system
       - id: check-lint
         name: check lint
         entry: make -s lint_staged

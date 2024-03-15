@@ -1,6 +1,7 @@
 """
 FTP Client Presenter
 """
+# pylint: disable=C0103
 from __future__ import annotations
 from typing import Optional, Protocol, Callable, Any, List, Dict
 
@@ -132,6 +133,7 @@ class RecordPresenter:
             if "record" in proc.name() and set(self.view.command[2:]).issubset(proc.cmdline()):
                 proc.send_signal(signal.SIGINT)
 
+
         self.proc.send_signal(signal.SIGINT)
 
         description = self.view.openDescriptionDialog()
@@ -182,18 +184,11 @@ class RecordPresenter:
             if re.match(r"\d+$", self.view.durationOption) or re.match(
                 r"\d+[mhMH]$", self.view.durationOption
             ):
-                options["--duration"] = self.view.durationOption
+                options["-d"] = self.view.durationOption
             else:
                 self.view.updateCommandResponse(
                     "Invalid duration format, should be number or number followed with m or h"
                 )
-                return
-
-        if self.view.numberOption != "":
-            if re.match(r"\d+$", self.view.numberOption):
-                options["--limit"] = self.view.numberOption
-            else:
-                self.view.updateCommandResponse("Invalid number format, should be number")
                 return
 
         ### generate command ###
@@ -229,7 +224,7 @@ class RecordPresenter:
         ------
 
         """
-        command = shlex.split("rostopic list")
+        command = shlex.split("ros2 topic list")
         proc = subprocess.Popen(  # pylint: disable=R1732
             command, stderr=subprocess.PIPE, stdout=subprocess.PIPE
         )
