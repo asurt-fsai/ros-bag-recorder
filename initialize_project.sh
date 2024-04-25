@@ -10,7 +10,9 @@ sudo apt-get install --no-install-recommends -y \
     wget \
     $ADDITIONAL_PACKAGES
 
+
 pip$PYTHON_SUFFIX install --upgrade pip$PYTHON_SUFFIX
+pip$PYTHON_SUFFIX install --upgrade customtkinter
 pip$PYTHON_SUFFIX install -r $SCRIPT_DIR/requirements.txt
 
 chmod +x $SCRIPT_DIR/.hooks/install_hooks.sh

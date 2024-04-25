@@ -30,9 +30,9 @@ def generateRosBagRecordCommand(
 
     currentTime = datetime.datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
 
-    command = "rosbag record"
+    command = "ros2 bag record"
 
-    command += f" -O {Constants.BAG_DIR_PATH}"
+    command += f" -o {Constants.BAG_DIR_PATH}"
     if prefix != "":
         command += prefix + "_" + currentTime
 
