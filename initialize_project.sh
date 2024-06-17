@@ -2,11 +2,12 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-PYTHON_SUFFIX=""
+PYTHON_SUFFIX="3"
 
 sudo apt update
 sudo apt-get install --no-install-recommends -y \
     python$PYTHON_SUFFIX-pip \
+    pre-commit \
     wget \
     $ADDITIONAL_PACKAGES
 
